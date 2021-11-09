@@ -14,14 +14,7 @@ calc_length <- function(sam_data) {
    
    index <- grep("[MDIS]",unlist(strsplit(sam_data["CIGAR"],"")),value = T)
    
-   length <- 0
-   
-   for (i in 1:length(split_str)) {
-      if(index[i] == "M" || index[i] == "I"){
-         length <- length + as.numeric(split_str[i])
-      }
-   }
-   return(length)
+   sum(mapply(function(index,split_str) ifelse(index == "M" || index == "I" ,as.numeric(split_str), 0),index, split_str))
 }
 
 sam_data$length <- apply(sam_data, 1, calc_length)
