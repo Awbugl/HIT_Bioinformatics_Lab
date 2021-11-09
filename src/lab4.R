@@ -8,27 +8,23 @@ scale_data <- scale(log(expr[-(1:3)]))
 #' @param scale_data the scaled data
 findDiffGene <- function(scale_data,sample_info)
 {
+   con_data <- sample_info[which(sample_info$V2 == "con"),]$V1
+   hm_data <- sample_info[which(sample_info$V2 == "hm"),]$V1
+      
    #' @title getPValues 
    #' @description Calc P-values
    #' @param scale_data the scaled data
    getPValues <- function(scale_data)
    {
-      t_test <- function(scale_data_item) {
-         t.test(scale_data_item[con_data], scale_data_item[hm_data])$p.value
-      }
-      
-      apply(scale_data,1,t_test)
+      apply(scale_data, 1, function(scale_data_item) t.test(scale_data_item[con_data], scale_data_item[hm_data])$p.value)
    }
    
-   #' @title getPValues 
+   #' @title getlog2FC 
    #' @description Calc log2(FC)
    #' @param scale_data the scaled data
    #' @param sample_info the sample_info file
    getlog2FC <- function(scale_data,sample_info)
    {
-      con_data <- sample_info[which(sample_info$V2 == "con"),]$V1
-      hm_data <- sample_info[which(sample_info$V2 == "hm"),]$V1
-      
       log2(abs(apply(scale_data[,hm_data], 1, mean)/apply(scale_data[,con_data], 1, mean)))
    }
    
